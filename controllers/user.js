@@ -42,13 +42,17 @@ export const verifyLogin = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  const { email, password, name, whatsapp, skills, imageName, } = req.body;
-  console.log(req.body)
+  const { email, password, name, whatsapp, skills, imageName } = req.body;
   const sekil = skills.split(',');
-  console.log(sekil)
   if(imageName){
+        console.log(req.file)
         let tmp_path= req.file.path;
-        let target_path = path.resolve(`public/uploads/${imageName}`)
+        let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        let filename = req.file.filename + '.' + originaExt;
+        
+        // let target_path = path.resolve(`public/uploads/${imageName}`)
+        let target_path = path.resolve(`../public/uploads/${filename}`)
+
 
         const src = fs.createReadStream(tmp_path)
         const dest = fs.createWriteStream(target_path)
@@ -63,7 +67,7 @@ export const signup = async (req, res) => {
             
             const hashedPassword = await bcrypt.hash(password, 12);
 
-            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: imageName });
+            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: filename });
 
             const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
