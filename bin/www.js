@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('pilihpartner:server');
+var debug = require('debug')('gamestore-backend:server');
 var http = require('http');
 const db = require('../db')
 
@@ -13,7 +13,7 @@ const db = require('../db')
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '5000');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
