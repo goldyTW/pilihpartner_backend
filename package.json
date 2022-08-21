@@ -9,6 +9,7 @@
     "prod": "node index.js"
   },
   "type": "module",
+  "bin":{"www":"./bin/www.js"},
   "author": "goldy",
   "license": "ISC",
   "dependencies": {
