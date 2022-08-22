@@ -57,7 +57,7 @@ export const signup = async (req, res) => {
         // let tes = path.resolve(__dirname, '..');
         // console.log(tes)
         let target_path = path.resolve(`uploads/${filename}`)
-        console.log(target_path)
+        // console.log(target_path)
 
 
         const src = fs.createReadStream(tmp_path)
@@ -67,13 +67,13 @@ export const signup = async (req, res) => {
 
         src.on('end', async ()=>{
           try {
-            const oldUser = await UserModal.findOne({ email });
+            // const oldUser = await UserModal.findOne({ email });
             
-            if (oldUser) return res.status(404).json({ message: "User already exist! Please use another email" });
+            // if (oldUser) return res.status(404).json({ message: "User already exist! Please use another email" });
             
             const hashedPassword = await bcrypt.hash(password, 12);
 
-            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: filename });
+            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: target_path });
 
             const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
