@@ -42,16 +42,22 @@ export const verifyLogin = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  const { email, password, name, whatsapp, skills, imageName } = req.body;
+  const { email, password, name, whatsapp, skills } = req.body;
   const sekil = skills.split(',');
-  if(imageName){
+  if(req.file){
         console.log(req.file)
         let tmp_path= req.file.path;
         let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
         let filename = req.file.filename + '.' + originaExt;
         
         // let target_path = path.resolve(`public/uploads/${imageName}`)
-        let target_path = path.resolve(`../public/uploads/${filename}`)
+        // let target_path = path.resolve(`../public/uploads/${filename}`)
+        // let __dirname = tmp_path;
+        // console.log(__dirname)
+        // let tes = path.resolve(__dirname, '..');
+        // console.log(tes)
+        let target_path = path.resolve(`uploads/${filename}`)
+        console.log(target_path)
 
 
         const src = fs.createReadStream(tmp_path)
