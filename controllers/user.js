@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import UserModal from "../models/user.js";
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url';
 
 const secret = 'test';
 
@@ -49,8 +50,13 @@ export const signup = async (req, res) => {
         let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
         let filename = req.file.filename + '.' + originaExt;
         
-        let target_path = path.resolve(`${filename}`)
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        // console.log(__dirname)
 
+        let target_path = path.resolve(path.resolve(__dirname, '..'),`public/uploads/${filename}`)
+        // console.log(tmp_path)
+        // console.log(target_path)
 
         const src = fs.createReadStream(tmp_path)
         const dest = fs.createWriteStream(target_path)
