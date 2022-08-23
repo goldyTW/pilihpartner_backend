@@ -49,7 +49,7 @@ export const signup = async (req, res) => {
         let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
         let filename = req.file.filename + '.' + originaExt;
         
-        let target_path = path.resolve(`public/uploads/${filename}`)
+        let target_path = path.resolve(`${filename}`)
 
 
         const src = fs.createReadStream(tmp_path)
