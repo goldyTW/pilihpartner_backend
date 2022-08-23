@@ -52,10 +52,9 @@ export const signup = async (req, res) => {
         
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        // console.log(__dirname)
 
         let target_path = path.resolve(path.resolve(__dirname, '..'),`public/uploads/${filename}`)
-        // console.log(tmp_path)
+        // console.log(req.body)
         // console.log(target_path)
 
         const src = fs.createReadStream(tmp_path)
