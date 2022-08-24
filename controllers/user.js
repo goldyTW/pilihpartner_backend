@@ -1,9 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModal from "../models/user.js";
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url';
 
 const secret = 'test';
 
@@ -43,26 +40,8 @@ export const verifyLogin = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  const { email, password, name, whatsapp, skills } = req.body;
+  const { email, password, name, whatsapp, skills, imageName } = req.body;
   const sekil = skills.split(',');
-  if(req.file){
-        let tmp_path= req.file.path;
-        let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
-        let filename = req.file.filename + '.' + originaExt;
-        
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
-
-        let target_path = path.resolve(path.resolve(__dirname, '..'),`public/uploads/${filename}`)
-        // console.log(req.body)
-        // console.log(target_path)
-
-        const src = fs.createReadStream(tmp_path)
-        const dest = fs.createWriteStream(target_path)
-
-        src.pipe(dest)
-
-        src.on('end', async ()=>{
           try {
             // const oldUser = await UserModal.findOne({ email });
             
@@ -70,7 +49,7 @@ export const signup = async (req, res) => {
             
             const hashedPassword = await bcrypt.hash(password, 12);
 
-            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: target_path });
+            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: imageName});
 
             const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
@@ -80,8 +59,6 @@ export const signup = async (req, res) => {
             
             console.log(error);
           }
-        })
-      }
 };
 
 export const getUsers = async (req, res) => {
