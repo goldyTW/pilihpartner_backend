@@ -1,10 +1,10 @@
 import Team from "../models/team.js";
 
 export const createTeam = async (req, res) => {
-  const { name, leader, member } = req.body;
+  const { name, leader, member, isConfirmed } = req.body;
 
   try {
-    const result = await Team.create({ name, leader, member });
+    const result = await Team.create({ name, leader, member, isConfirmed});
 
     res.status(201).json({ result });
   } catch (error) {
@@ -28,6 +28,17 @@ export const updateTeam = async (req, res) => {
 }
 
 export const getTeam = async (req, res) => {
+   try {
+        const Teams = await Team.find();
+        res.json({data:Teams})
+    } catch (error) {    
+        res.status(404).json({ message: error.message });
+    }
+}
+
+export const getTeamPerID = async (req, res) => {
+  const {idteam} = req.params;
+  console.log(idteam)
    try {
         const Teams = await Team.find();
         res.json({data:Teams})

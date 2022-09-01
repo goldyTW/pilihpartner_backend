@@ -8,7 +8,7 @@ import { signin, signup, getUsers, updateUser, getSingleUser, verifyLogin } from
 router.post("/login", signin);
 router.post("/register", multer({ dest: os.tmpdir() }).single('image'), signup);
 router.get("/", getUsers);
-router.patch("/update/:id", updateUser);
+router.patch("/:id", updateUser);
 router.get("/:id", getSingleUser);
 router.post("/verify", verifyLogin);
 export default router;

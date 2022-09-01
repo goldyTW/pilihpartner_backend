@@ -40,25 +40,26 @@ export const verifyLogin = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  const { email, password, name, whatsapp, skills, imageName } = req.body;
+  // const { email, password, name, whatsapp, skills, imageName } = req.body;
+  const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, endorse } = req.body;
   const sekil = skills.split(',');
-          try {
-            // const oldUser = await UserModal.findOne({ email });
-            
-            // if (oldUser) return res.status(404).json({ message: "User already exist! Please use another email" });
-            
-            const hashedPassword = await bcrypt.hash(password, 12);
+  try {
+    // const oldUser = await UserModal.findOne({ email });
+    
+    // if (oldUser) return res.status(404).json({ message: "User already exist! Please use another email" });
+    
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-            const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: imageName});
+    const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: imageName});
 
-            const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
+    const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
-            res.status(201).json({ result, token });
-          } catch (error) {
-            res.status(500).json({ message: "Something went wrong" });
-            
-            console.log(error);
-          }
+    res.status(201).json({ result, token });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+    
+    console.log(error);
+  }
 };
 
 export const getUsers = async (req, res) => {
@@ -74,7 +75,12 @@ export const getUsers = async (req, res) => {
         // res.json({ data: users, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
 
         const users = await UserModal.find();
-        res.json({data:users})
+        let users2 = [];
+        users.forEach(element => {
+          users2.push( {email:element.email, name:element.name, location:element.location, whatsapp:element.whatsapp, education:element.education, img:element.img, skills:element.skills, _id:element._id})
+        })
+        res.json({data: users2})
+       
     } catch (error) {    
         res.status(404).json({ message: error.message });
     }
@@ -83,8 +89,9 @@ export const getUsers = async (req, res) => {
 export const getSingleUser = async (req, res) => {
   const {id} = req.params
    try {
-        const singleuser = await UserModal.findOne({ _id: id });
-        res.json({data:singleuser})
+        const user = await UserModal.findOne({ _id: id });
+        res.json({data: {email:user.email, name:user.name, location:user.location, whatsapp:user.whatsapp, education:user.education, portofolio:user.portofolio,
+          img:user.img, skills:user.skills, id:user.id, endorse:user.endorse, recommendation:user.recommendation, _id:user.id}})
 
     } catch (error) {    
         res.status(404).json({ message: error.message });
@@ -93,13 +100,15 @@ export const getSingleUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, whatsapp, location, skill, education, portofolio } = req.body;
+    const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse } = req.body;
     
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No user with id: ${id}`);
+    const oldUser = await UserModal.findOne({ _id: id });
 
-    const updatedUser = { name, whatsapp, location, skill, education, portofolio, _id: id };
+    if (!oldUser) return res.status(404).send(`No user with id: ${id}`);
 
-    await UserModal.findByIdAndUpdate(id, updatedUser, { new: true });
+    const updatedUser = { name, whatsapp, location, skills, education, img, portofolio, recommendation, endorse, _id: id };
 
-    res.json(updatedUser);
+    const result = await UserModal.findByIdAndUpdate(id, updatedUser, { new: true });
+
+    res.status(200).json(result);
 }
