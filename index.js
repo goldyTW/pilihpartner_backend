@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.js';
 import teamRoutes from './routes/team.js';
+import offerRoutes from './routes/offer.js';
 
 const app = express();  
 dotenv.config();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/user', userRoutes);
 app.use('/team', teamRoutes);
+app.use('/offer', offerRoutes);
 
 mongoose.connect(process.env.CONNECTION_URL, {useNewUrlParser:true, useUnifiedTopology:true})
   .then(() => app.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))

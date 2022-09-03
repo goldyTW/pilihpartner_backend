@@ -8,5 +8,5 @@ router.post("/create", createTeam);
 router.get("/", getTeam);
 router.get("/:id", getMyTeam);
 router.patch("/:id", updateTeam);
-router.get("/:idteam", getTeamPerID)
+router.get("/single/:id", getTeamPerID)
 export default router;

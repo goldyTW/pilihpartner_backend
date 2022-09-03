@@ -18,7 +18,9 @@ export const updateTeam = async (req, res) => {
     const { id } = req.params;
     const { name, member } = req.body;
     
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No team with id: ${id}`);
+    const oldteam = await Team.findOne({ _id: id });
+
+    if (!oldteam) return res.status(404).send(`No team with id: ${id}`);
 
     const updatedTeam = { name, member, _id: id };
 
@@ -37,11 +39,10 @@ export const getTeam = async (req, res) => {
 }
 
 export const getTeamPerID = async (req, res) => {
-  const {idteam} = req.params;
-  console.log(idteam)
+  const {id} = req.params;
    try {
-        const Teams = await Team.find();
-        res.json({data:Teams})
+        const team = await Team.findOne({ _id: id });
+        res.json({data:team})
     } catch (error) {    
         res.status(404).json({ message: error.message });
     }
