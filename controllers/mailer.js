@@ -1,6 +1,7 @@
 import { rejects } from 'assert';
 import Nodemailer from 'nodemailer';
-const url = 'http://localhost:5000'
+// const url = 'http://localhost:5000'
+let url = "https://pilihpartner.herokuapp.com";
 
 function mailer({toUser, _id}) {
     const transporter = Nodemailer.createTransport({

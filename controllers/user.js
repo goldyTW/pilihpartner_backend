@@ -5,7 +5,8 @@ import mailChangePass from "./mailChangePass.js";
 import mailer from "./mailer.js";
 
 const secret = 'test';
-const url = 'http://localhost:3000';
+// const url = 'http://localhost:3000';
+let url = "https://pilihpartner.netlify.app";
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
