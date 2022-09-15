@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
   img: { type: String, required: false},
   skills: { type: [String], default: [] },
   id: { type: String },
+  activated: {type:Boolean}
 });
 
 export default mongoose.model("user", userSchema);

@@ -1,8 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModal from "../models/user.js";
+import mailChangePass from "./mailChangePass.js";
+import mailer from "./mailer.js";
 
 const secret = 'test';
+const url = 'http://localhost:3000';
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
@@ -16,6 +19,10 @@ export const signin = async (req, res) => {
 
     if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
 
+    const isActivated = await UserModal.findOne({ email, activated:true });
+
+    if(!isActivated) return res.status(405).json({message: "Please Activate your email first!"})
+
     const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" });
 
     res.status(200).json({ result: oldUser, token });
@@ -24,9 +31,24 @@ export const signin = async (req, res) => {
   }
 };
 
-export const verifyLogin = async (req, res) => {
-  const { email } = req.body;
+export const checkEmail = async (req, res) => {
+   const { email } = req.body;
+   try{
+     const oldUser = await UserModal.findOne({ email });
 
+    if (!oldUser) return res.status(201)
+    
+    mailChangePass({toUser: oldUser, _id:oldUser._id})
+    return res.status(200).json({ message: "success" });;
+
+   }catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+export const verifySignUp = async (req, res) => {
+  const { email } = req.body;
+  
   try {
     const oldUser = await UserModal.findOne({ email });
 
@@ -40,27 +62,55 @@ export const verifyLogin = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  // const { email, password, name, whatsapp, skills, imageName } = req.body;
   const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, endorse } = req.body;
   const sekil = skills.split(',');
   try {
-    // const oldUser = await UserModal.findOne({ email });
-    
-    // if (oldUser) return res.status(404).json({ message: "User already exist! Please use another email" });
-    
-    const hashedPassword = await bcrypt.hash(password, 12);
+   const hashedPassword = await bcrypt.hash(password, 12);
 
-    const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, skills: sekil, img: imageName});
+    const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, location, education, portofolio, recommendation, endorse, skills: sekil, img: imageName, activated:false});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
+    mailer({toUser: result, _id:result._id})
     res.status(201).json({ result, token });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
-    
     console.log(error);
   }
 };
+
+export const userActivate = async (req, res) =>{
+  const {id} = req.params;
+  try{
+    const user = await UserModal.findOne({_id: id});
+    if(!user) return res.status(422).send('User Cannot be Activated!');
+    
+    const update = {activated: true}
+    const result = await UserModal.findByIdAndUpdate(id, update,{new:true} )
+    res.redirect(url+'/activated');
+
+  } 
+  catch(error){
+   res.status(500).json({ message: "Something went wrong" });
+   console.log(error)
+  }
+}
+
+export const resetPassword = async (req, res) =>{
+  const {id} = req.params;
+  try{
+    const user = await UserModal.findOne({_id: id});
+    if(!user) return res.status(422).send('User Cannot be Activated!');
+    
+    res.redirect(url+'/change-password/'+id);
+
+  } 
+  catch(error){
+   res.status(500).json({ message: "Something went wrong" });
+   console.log(error)
+  }
+}
+
 
 export const getUsers = async (req, res) => {
     // const { page } = req.query;
@@ -100,13 +150,16 @@ export const getSingleUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse } = req.body;
+    const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse, password } = req.body;
     
     const oldUser = await UserModal.findOne({ _id: id });
 
     if (!oldUser) return res.status(404).send(`No user with id: ${id}`);
 
-    const updatedUser = { name, whatsapp, location, skills, education, img, portofolio, recommendation, endorse, _id: id };
+    let hashedPassword;
+    if(password) {hashedPassword = await bcrypt.hash(password, 12);} 
+
+    const updatedUser = { name, whatsapp, password:hashedPassword, location, skills, education, img, portofolio, recommendation, endorse, _id: id };
 
     const result = await UserModal.findByIdAndUpdate(id, updatedUser, { new: true });
 

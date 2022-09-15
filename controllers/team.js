@@ -16,13 +16,13 @@ export const createTeam = async (req, res) => {
 
 export const updateTeam = async (req, res) => {
     const { id } = req.params;
-    const { name, member } = req.body;
+    const { name, member, isConfirmed } = req.body;
     
     const oldteam = await Team.findOne({ _id: id });
 
     if (!oldteam) return res.status(404).send(`No team with id: ${id}`);
 
-    const updatedTeam = { name, member, _id: id };
+    const updatedTeam = { name, member, isConfirmed, _id: id };
 
     await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
 
