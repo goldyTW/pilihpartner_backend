@@ -128,7 +128,8 @@ export const getUsers = async (req, res) => {
         const users = await UserModal.find();
         let users2 = [];
         users.forEach(element => {
-          users2.push( {email:element.email, name:element.name, location:element.location, whatsapp:element.whatsapp, education:element.education, img:element.img, skills:element.skills, _id:element._id})
+          users2.push( {email:element.email, name:element.name, location:element.location, whatsapp:element.whatsapp, 
+            education:element.education, img:element.img, skills:element.skills, _id:element._id, activated:element.activated})
         })
         res.json({data: users2})
        
