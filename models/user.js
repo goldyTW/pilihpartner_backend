@@ -15,7 +15,8 @@ const userSchema = mongoose.Schema({
   id: { type: String },
   activated: {type:Boolean},
   friend:{type: [String]},
-  mbti:{type:String}
+  mbti:{type:String},
+  currentPosition:{type:String}
 });
 
 export default mongoose.model("user", userSchema);

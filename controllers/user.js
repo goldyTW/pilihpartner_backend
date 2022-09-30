@@ -146,7 +146,7 @@ export const getSingleUser = async (req, res) => {
         const user = await UserModal.findOne({ _id: id });
         res.json({data: {email:user.email, name:user.name, location:user.location, whatsapp:user.whatsapp, education:user.education, 
           portofolio:user.portofolio, img:user.img, skills:user.skills, id:user.id, endorse:user.endorse, friend:user.friend,
-           recommendation:user.recommendation, mbti:user.mbti, _id:user.id}})
+           recommendation:user.recommendation, currentPosition:user.currentPosition, mbti:user.mbti, _id:user.id}})
         
     } catch (error) {    
         res.status(404).json({ message: error.message });
