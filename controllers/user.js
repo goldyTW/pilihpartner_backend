@@ -63,12 +63,14 @@ export const verifySignUp = async (req, res) => {
 
 
 export const signup = async (req, res) => {
-  const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, endorse } = req.body;
+  const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, 
+    endorse, mbti, friend, currentPosition } = req.body;
   const sekil = skills.split(',');
   try {
    const hashedPassword = await bcrypt.hash(password, 12);
 
-    const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, location, education, portofolio, recommendation, endorse, skills: sekil, img: imageName, activated:false});
+    const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, location, education, portofolio, 
+      currentPosition, recommendation, endorse, skills: sekil, img: imageName, activated:false, mbti, friend});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
@@ -128,7 +130,7 @@ export const getUsers = async (req, res) => {
         const users = await UserModal.find();
         let users2 = [];
         users.forEach(element => {
-          users2.push( {email:element.email, name:element.name, location:element.location, whatsapp:element.whatsapp, 
+          users2.push( {email:element.email, name:element.name, location:element.location, whatsapp:element.whatsapp, recommendation:element.recommendation,
             education:element.education, img:element.img, skills:element.skills, _id:element._id, activated:element.activated})
         })
         res.json({data: users2})
@@ -142,9 +144,10 @@ export const getSingleUser = async (req, res) => {
   const {id} = req.params
    try {
         const user = await UserModal.findOne({ _id: id });
-        res.json({data: {email:user.email, name:user.name, location:user.location, whatsapp:user.whatsapp, education:user.education, portofolio:user.portofolio,
-          img:user.img, skills:user.skills, id:user.id, endorse:user.endorse, recommendation:user.recommendation, _id:user.id}})
-
+        res.json({data: {email:user.email, name:user.name, location:user.location, whatsapp:user.whatsapp, education:user.education, 
+          portofolio:user.portofolio, img:user.img, skills:user.skills, id:user.id, endorse:user.endorse, friend:user.friend,
+           recommendation:user.recommendation, mbti:user.mbti, _id:user.id}})
+        
     } catch (error) {    
         res.status(404).json({ message: error.message });
     }
@@ -152,7 +155,8 @@ export const getSingleUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse, password } = req.body;
+    const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse, 
+      password, mbti, friend, currentPosition} = req.body;
     
     const oldUser = await UserModal.findOne({ _id: id });
 
@@ -161,7 +165,8 @@ export const updateUser = async (req, res) => {
     let hashedPassword;
     if(password) {hashedPassword = await bcrypt.hash(password, 12);} 
 
-    const updatedUser = { name, whatsapp, password:hashedPassword, location, skills, education, img, portofolio, recommendation, endorse, _id: id };
+    const updatedUser = { name, whatsapp, password:hashedPassword, location, skills, education, img, portofolio, 
+      currentPosition, recommendation, endorse, mbti, friend, _id: id };
 
     const result = await UserModal.findByIdAndUpdate(id, updatedUser, { new: true });
 

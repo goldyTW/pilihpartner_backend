@@ -13,7 +13,9 @@ const userSchema = mongoose.Schema({
   img: { type: String, required: false},
   skills: { type: [String], default: [] },
   id: { type: String },
-  activated: {type:Boolean}
+  activated: {type:Boolean},
+  friend:{type: [String]},
+  mbti:{type:String}
 });
 
 export default mongoose.model("user", userSchema);
