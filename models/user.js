@@ -16,6 +16,9 @@ const userSchema = mongoose.Schema({
   activated: {type:Boolean},
   connection:{type: [String]},
   mbti:{type:String},
+  linkedin:{type:String},
+  twitter:{type:String},
+  instagram:{type:String},
   currentPosition:{type:String}
 });
 
