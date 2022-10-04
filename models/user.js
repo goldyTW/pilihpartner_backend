@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
   skills: { type: [String], default: [] },
   id: { type: String },
   activated: {type:Boolean},
-  friend:{type: [String]},
+  connection:{type: [String]},
   mbti:{type:String},
   currentPosition:{type:String}
 });
