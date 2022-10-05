@@ -8,6 +8,35 @@ const secret = 'test';
 // const url = 'http://localhost:3000';
 let url = "https://pilihpartner.netlify.app";
 
+export const verifyGoogle = async (req, res) => {
+  const { email } = req.body;
+  
+  try {
+    const oldUser = await UserModal.findOne({ email });
+
+    if (oldUser) return res.status(200).json({ message: "user exist" });
+    
+    res.status(201).json({ message: "User not exist" });
+    
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+export const signinGoogle = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const oldUser = await UserModal.findOne({ email });
+
+    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" });
+
+    res.status(200).json({ result: oldUser, token });
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -61,7 +90,6 @@ export const verifySignUp = async (req, res) => {
   }
 }
 
-
 export const signup = async (req, res) => {
   const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, 
     endorse, mbti, connnection, currentPosition } = req.body;
@@ -75,6 +103,25 @@ export const signup = async (req, res) => {
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
     mailer({toUser: result, _id:result._id})
+    res.status(201).json({ result, token });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+    console.log(error);
+  }
+};
+
+export const signupGoogle = async (req, res) => {
+  const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, 
+    endorse, mbti, connnection, currentPosition } = req.body;
+  const sekil = skills.split(',');
+  try {
+   const hashedPassword = await bcrypt.hash('vf5PwQtFQsn8uRr7', 12);
+
+    const result = await UserModal.create({ email, password:hashedPassword, name, whatsapp, location, education, portofolio, 
+      currentPosition, recommendation, endorse, skills, img: imageName, activated:true, mbti, connnection});
+
+    const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
+
     res.status(201).json({ result, token });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
