@@ -16,17 +16,25 @@ export const createTeam = async (req, res) => {
 
 export const updateTeam = async (req, res) => {
     const { id } = req.params;
-    const { name, member, isConfirmed, github, figma, requirement, timeline } = req.body;
+    const { name, member, membernew, isConfirmed, github, figma, requirement, timeline } = req.body;
     
     const oldteam = await Team.findOne({ _id: id });
 
     if (!oldteam) return res.status(404).send(`No team with id: ${id}`);
-
-    const updatedTeam = { name, member, isConfirmed, github, figma, requirement, timeline, _id: id };
-
-    await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
-
-    res.json(updatedTeam);
+    
+    if(membernew){
+       const updatedTeam = { name, member, member2:membernew, isConfirmed, github, figma, requirement, timeline, _id: id };
+      await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
+      res.json(updatedTeam);
+    }
+    else{
+      console.log('sini')
+      let member2 = [];
+      member.map((item) => member2.push({id:item, role:''}))
+      const updatedTeam = { name, member, member2, isConfirmed, github, figma, requirement, timeline, _id: id };
+      await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
+      res.json(updatedTeam);
+    }
 }
 
 export const getTeam = async (req, res) => {
