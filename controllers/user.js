@@ -118,7 +118,7 @@ export const signupGoogle = async (req, res) => {
    const hashedPassword = await bcrypt.hash('vf5PwQtFQsn8uRr7', 12);
 
     const result = await UserModal.create({ email, password:hashedPassword, name, whatsapp, location, education, portofolio, 
-      currentPosition, recommendation, endorse, skills, img: imageName, activated:true, mbti, connnection});
+      currentPosition, recommendation, endorse, skills:sekil, img: imageName, activated:true, mbti, connnection});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
