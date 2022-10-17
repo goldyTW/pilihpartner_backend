@@ -50,7 +50,7 @@ export const updateTeam = async (req, res) => {
         }
       }
       else{
-        const updatedTeam = { isFinished, _id: id };
+        const updatedTeam = { name, isConfirmed, github, figma, requirement, timeline, isFinished, _id: id };
         await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
         res.json(updatedTeam);
       }
