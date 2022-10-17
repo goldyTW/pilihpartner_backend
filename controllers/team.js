@@ -16,25 +16,47 @@ export const createTeam = async (req, res) => {
 
 export const updateTeam = async (req, res) => {
     const { id } = req.params;
-    const { name, member, membernew, isConfirmed, github, figma, requirement, timeline } = req.body;
+    const { name, member, memberupdate, isConfirmed, github, figma, requirement, timeline, isFinished } = req.body;
     
     const oldteam = await Team.findOne({ _id: id });
 
     if (!oldteam) return res.status(404).send(`No team with id: ${id}`);
-    
-    if(membernew){
-       const updatedTeam = { name, member, member2:membernew, isConfirmed, github, figma, requirement, timeline, _id: id };
+
+    if(memberupdate){
+      const updatedTeam = { name, member, member2:memberupdate, isConfirmed, github, figma, requirement, timeline, _id: id };
       await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
       res.json(updatedTeam);
     }
     else{
-      console.log('sini')
-      let member2 = [];
-      member.map((item) => member2.push({id:item, role:''}))
-      const updatedTeam = { name, member, member2, isConfirmed, github, figma, requirement, timeline, _id: id };
-      await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
-      res.json(updatedTeam);
+      if(member){
+        if(!oldteam.isConfirmed){
+          let member2 = [];
+          member.map((item) => member2.push({id:item, role:''}))
+          const updatedTeam = { name, member, member2, isConfirmed, github, figma, requirement, timeline, _id: id };
+          await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
+          res.json(updatedTeam);
+        }else{
+          let member1 = JSON.stringify(oldteam.member)
+          member1 = JSON.parse(member1);
+          member.map((item) => member1.push(item))
+
+          let member2 = JSON.stringify(oldteam.member2)
+          member2 = JSON.parse(member2);
+          member.map((item) => member2.push({id:item, role:''}))
+
+          const updatedTeam = { name, member:member1, member2, isConfirmed, github, figma, requirement, timeline, _id: id };
+          await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
+          res.json(updatedTeam);
+        }
+      }
+      else{
+        const updatedTeam = { isFinished, _id: id };
+        await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
+        res.json(updatedTeam);
+      }
     }
+    
+    
 }
 
 export const getTeam = async (req, res) => {

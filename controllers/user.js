@@ -204,9 +204,7 @@ export const getSingleUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, whatsapp, location, skills, img, education, portofolio, recommendation, endorse, twitter, linkedin, instagram,
-      password, mbti, connection, currentPosition} = req.body;
-
-    console.log(req.body)
+      password, mbti, connection, currentPosition} = req.body;  
     
     const oldUser = await UserModal.findOne({ _id: id });
 

@@ -10,6 +10,7 @@ const teamSchema = mongoose.Schema({
   figma:{type:String},
   timeline:{type:String},
   requirement:{type:String},
+  isFinished:{type:Boolean},
   id: { type: String },
 });
 
