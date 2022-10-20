@@ -4,7 +4,7 @@ export const createTeam = async (req, res) => {
   const { name, leader, member, isConfirmed } = req.body;
 
   try {
-    const result = await Team.create({ name, leader, member, isConfirmed});
+    const result = await Team.create({ name, leader, isConfirmed, member, member2:[], github:'', figma:'', timeline:'', requirement:'', isFinished:false});
 
     res.status(201).json({ result });
   } catch (error) {
@@ -50,7 +50,7 @@ export const updateTeam = async (req, res) => {
         }
       }
       else{
-        const updatedTeam = { isFinished, _id: id };
+        const updatedTeam = { github, figma, requirement, timeline, isFinished, _id: id };
         await Team.findByIdAndUpdate(id, updatedTeam, { new: true });
         res.json(updatedTeam);
       }
