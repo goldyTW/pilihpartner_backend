@@ -5,7 +5,6 @@ import mailChangePass from "./mailChangePass.js";
 import mailer from "./mailer.js";
 
 const secret = 'test';
-// const url = 'http://localhost:3000';
 let url = "https://pilihpartner.netlify.app";
 
 export const verifyGoogle = async (req, res) => {
@@ -93,7 +92,10 @@ export const verifySignUp = async (req, res) => {
 export const signup = async (req, res) => {
   const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, 
     endorse, mbti, connnection, currentPosition } = req.body;
+  console.log(skills)
   const sekil = skills.split(',');
+  console.log(sekil)
+
   try {
    const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -113,12 +115,13 @@ export const signup = async (req, res) => {
 export const signupGoogle = async (req, res) => {
   const { email, password, name, whatsapp, location, skills, imageName, education, portofolio, recommendation, 
     endorse, mbti, connnection, currentPosition } = req.body;
-  const sekil = skills.split(',');
+
   try {
-   const hashedPassword = await bcrypt.hash('vf5PwQtFQsn8uRr7', 12);
+    // 'vf5PwQtFQsn8uRr7'
+   const hashedPassword = await bcrypt.hash(Math.random().toString(36).substr(2, 8), 12);
 
     const result = await UserModal.create({ email, password:hashedPassword, name, whatsapp, location, education, portofolio, 
-      currentPosition, recommendation, endorse, skills:sekil, img: imageName, activated:true, mbti, connnection});
+      currentPosition, recommendation, endorse, skills, img: imageName, activated:true, mbti, connnection});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
