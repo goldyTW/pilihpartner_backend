@@ -6,6 +6,8 @@ const offerSchema = mongoose.Schema({
   isAccepted: { type: Boolean },
   isHold: { type: Boolean },
   id: { type: String },
+  createdAt:{type:Date},
+  updatedAt:{type:Date},
 });
 
 export default mongoose.model("offer", offerSchema);

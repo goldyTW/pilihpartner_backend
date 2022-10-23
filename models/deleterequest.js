@@ -6,6 +6,8 @@ const deleteRequestSchema = mongoose.Schema({
   teamname: { type: String, required:  true },
   teamid:{ type:String, required:true },
   isConfirmed:{type: Boolean},
+  createdAt:{type:Date},
+  updatedAt:{type:Date},
   id: { type: String },
 });
 
