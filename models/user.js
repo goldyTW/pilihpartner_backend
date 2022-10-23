@@ -19,6 +19,8 @@ const userSchema = mongoose.Schema({
   linkedin:{type:String},
   twitter:{type:String},
   instagram:{type:String},
+  createdAt:{type:Date},
+  updatedAt:{type:Date},
   currentPosition:{type:String}
 });
 

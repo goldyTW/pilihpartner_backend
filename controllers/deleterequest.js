@@ -4,7 +4,7 @@ export const createDeleteRequest = async (req, res) => {
   const { membername, memberid, teamname, teamid } = req.body;
 
   try {
-    const result = await Request.create({ membername, memberid, teamid, teamname, isConfirmed:false});
+    const result = await Request.create({ membername, memberid, teamid, teamname, isConfirmed:false, createdAt: new Date(), updatedAt: new Date()});
 
     res.status(201).json({ result });
   } catch (error) {

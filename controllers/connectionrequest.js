@@ -4,7 +4,7 @@ export const createConnectionRequest = async (req, res) => {
   const { to, from, status } = req.body;
 
   try {
-    const oldrequest = await Connection.findOne({ to:to, from:from, status:status});
+    const oldrequest = await Connection.findOne({ to:to, from:from, status:status, createdAt: new Date(), updatedAt: new Date()});
 
     if (!oldrequest){
         const result = await Connection.create({ to, from, status});
@@ -36,7 +36,7 @@ export const updateConnectionRequest = async (req, res) => {
 
       if (!oldConnectionReq) return res.status(404).send(`No connection request found`);
 
-      const updatedConnectionReq = { to, from, status, _id: id };
+      const updatedConnectionReq = { to, from, status, _id: id, updatedAt: new Date()};
 
       await Connection.findByIdAndUpdate(id, updatedConnectionReq, { new: true });
 

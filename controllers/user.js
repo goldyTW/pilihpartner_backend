@@ -100,7 +100,7 @@ export const signup = async (req, res) => {
    const hashedPassword = await bcrypt.hash(password, 12);
 
     const result = await UserModal.create({ email, password: hashedPassword, name, whatsapp, location, education, portofolio, 
-      currentPosition, recommendation, endorse, skills: sekil, img: imageName, activated:false, mbti, connnection});
+      currentPosition, recommendation, endorse, skills: sekil, img: imageName, activated:false, mbti, connnection, createdAt: new Date(), updatedAt: new Date()});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
@@ -121,7 +121,7 @@ export const signupGoogle = async (req, res) => {
    const hashedPassword = await bcrypt.hash(Math.random().toString(36).substr(2, 8), 12);
 
     const result = await UserModal.create({ email, password:hashedPassword, name, whatsapp, location, education, portofolio, 
-      currentPosition, recommendation, endorse, skills, img: imageName, activated:true, mbti, connnection});
+      currentPosition, recommendation, endorse, skills, img: imageName, activated:true, mbti, connnection, createdAt: new Date(), updatedAt: new Date()});
 
     const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } );
 
@@ -153,7 +153,7 @@ export const resetPassword = async (req, res) =>{
   const {id} = req.params;
   try{
     const user = await UserModal.findOne({_id: id});
-    if(!user) return res.status(422).send('User Cannot be Activated!');
+    if(!user) return res.status(422).send('User not found!');
     
     res.redirect(url+'/change-password/'+id);
 
@@ -217,7 +217,7 @@ export const updateUser = async (req, res) => {
     if(password) {hashedPassword = await bcrypt.hash(password, 12);} 
 
     const updatedUser = { name, whatsapp, password:hashedPassword, location, skills, education, img, portofolio, twitter, linkedin, instagram,
-      currentPosition, recommendation, endorse, mbti, connection, _id: id };
+      currentPosition, recommendation, endorse, mbti, connection, _id: id, updatedAt: new Date() };
 
     const result = await UserModal.findByIdAndUpdate(id, updatedUser, { new: true });
 

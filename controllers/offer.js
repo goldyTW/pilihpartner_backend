@@ -7,7 +7,7 @@ export const createOffer = async (req, res) => {
     const oldteam = await offer.findOne({ to:to, teamid:teamid});
 
     if (!oldteam){
-        const result = await offer.create({ teamid, to, isAccepted, isHold});
+        const result = await offer.create({ teamid, to, isAccepted, isHold, createdAt: new Date(), updatedAt: new Date()});
         res.status(201).json({ result });
     }
 
@@ -37,7 +37,7 @@ export const updateOffer = async (req, res) => {
 
     if (!oldOffer) return res.status(404).send(`No team with id: ${id}`);
 
-    const updatedOffer = { isAccepted, isHold, _id: id };
+    const updatedOffer = { isAccepted, isHold, _id: id, updatedAt: new Date() };
 
     await offer.findByIdAndUpdate(id, updatedOffer, { new: true });
 
