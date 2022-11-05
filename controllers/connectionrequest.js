@@ -1,4 +1,6 @@
 import Connection from "../models/connection.js";
+import user from "../models/user.js";
+import mailerConnection from "./mailerConnection.js";
 
 export const createConnectionRequest = async (req, res) => {
   const { to, from, status } = req.body;
@@ -7,6 +9,9 @@ export const createConnectionRequest = async (req, res) => {
     const oldrequest = await Connection.findOne({ to:to, from:from, status:status, createdAt: new Date(), updatedAt: new Date()});
 
     if (!oldrequest){
+        const userTo = await user.findOne({ _id:to })
+        const userFrom = await user.findOne({ _id:from })
+        mailerConnection({toUser:userTo, from:userFrom})
         const result = await Connection.create({ to, from, status});
         res.status(201).json({ result });
     }

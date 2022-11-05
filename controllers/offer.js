@@ -1,4 +1,6 @@
 import offer from "../models/offer.js";
+import user from "../models/user.js";
+import mailerOffer from "./mailerOffer.js";
 
 export const createOffer = async (req, res) => {
   const { teamid, to, isAccepted, isHold } = req.body;
@@ -7,6 +9,8 @@ export const createOffer = async (req, res) => {
     const oldteam = await offer.findOne({ to:to, teamid:teamid});
 
     if (!oldteam){
+        // const userTo = await user.findOne({ _id:to })
+        // mailerOffer({toUser: userTo})
         const result = await offer.create({ teamid, to, isAccepted, isHold, createdAt: new Date(), updatedAt: new Date()});
         res.status(201).json({ result });
     }
